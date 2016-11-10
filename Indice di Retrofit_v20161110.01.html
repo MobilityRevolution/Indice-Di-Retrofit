@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<!-- HTML5 -->
+<html dir="ltr" lang="it">
+<head>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+ <meta charset="utf-8">
+ <title>Form preventivo - JavaScript</title>
+<style>
+html,body{
+margin:0;
+padding:0;
+background:#005321;
+}
+#contenitore{
+position: relative;
+width: 960px;
+margin: 20px auto;
+text-align:center;
+overflow:hidden;
+font: 14px 'Trebuchet MS', sans serif;
+}
+/**form**/
+form {
+background:#006b2d;
+width: 620px;
+margin: 30px auto;
+}
+fieldset {
+    border: 1px solid #263248;
+    color: #ffffff;
+    font: 14px Verdana,sans-serif;
+    margin: 0;
+    _padding: 0px 10px 10px 6px;
+    width: 600px;
+}
+fieldset legend {
+    font-size: 16px;
+    font-weight: 900;
+    padding: 0 12px;
+    text-align: center;
+    visibility: visible;
+    color: #ffec00;
+}
+label {
+    border-right: 1px dotted #263248;
+    color: #ffffff;
+    display: block;
+    float: left;
+    font-weight: bold;
+    margin: 6px 8px 0;
+    padding-right: 5px;
+    text-align: right;
+    width: 250px;
+    padding: 3px;
+}
+input {
+    border: 1px solid #CFCED3;
+    color: #777777;
+    font: 1em Verdana,sans-serif;
+    margin: 4px 0;
+    padding: 3px;
+}
+fieldset input, fieldset select, fieldset textarea {
+    margin-left: 8px;
+    margin-top: 6px;
+}
+input.button {
+    background-color: #005321;
+    background-image: none;
+    border: 1px solid #EAEAEA;
+    color: #ffec00;
+    cursor: pointer;
+    font-weight: 900;
+    margin: 10px;
+}
+.canc{
+clear:both;
+}
+
+a {
+font: 14px 'Trebuchet MS', sans serif;
+}
+
+</style>
+
+<script type="text/javascript">
+function calcola(){
+
+//veicolo originale
+
+var a=document.getElementById('$a').value;
+var b=document.getElementById('$b').value;
+var c=document.getElementById('$c').value;
+var g=document.getElementById('$g').value;
+var h=document.getElementById('$h').value;
+var i=document.getElementById('$i').value;
+var l=document.getElementById('$l').value;
+var m=document.getElementById('$m').value;
+
+//veicolo retrofittato
+
+var a_r = a/2;
+var b_r = 0;
+var g_r=document.getElementById('$g_r').value;
+var h_r=document.getElementById('$h_r').value;
+var i_r=document.getElementById('$i_r').value;
+var l_r=document.getElementById('$l_r').value;
+var m_r=document.getElementById('$m_r').value;
+
+//variabili comuni
+
+var n=document.getElementById('$n').value;
+var o=document.getElementById('$o').value;
+
+//calcoli per l'indice economico
+
+//ciclo if per caolcolare il valore rsiduo all'anno x di ammortamento. Ho dovuto semplificare la formula in quanto ho avuto problemi con l'operatore if
+if (n != null) {
+    r$= Math.round(m*(0.85-(0.1*n)));
+    //document.getElementById("demo").innerHTML = "ok";
+}
+
+//calcolo delle variabili di prezzo e interesse da usare nella funzione ersponenziale
+if (n != null) {
+    o_1 = o+1;
+    n_1 = n-1;
+    //document.getElementById("demo2").innerHTML = "ok";
+}
+
+var Vo_cu= (a*1+b*1)/c+(g*h)/100+((i*1+l*1)/100000)+((m*(1-r$))/c)*(Math.pow(o_1,n_1)); //costo chilometrico del veicolo originale
+
+var Vr_cu= (a_r*1+b_r*1)/c+(g_r*h_r)/100+((i_r*1+l_r*1)/100000)+((m_r*(1-r$))/c)*(Math.pow(o_1,n_1)); //costo chilometrico del veicolo retrofittato
+
+var eidx= Math.ceil(((Vo_cu-Vr_cu)/Vo_cu)*100);
+
+//calcoli per l'indice ambientale
+
+//dichiarazioni variabili
+
+var p=document.getElementById('$p').value;//motorizzazione
+var q=document.getElementById('$q').value;//classe inquinamento
+var r=document.getElementById('$r').value;//tipo di veicolo
+
+if (p == 1) { 
+            p_1 ="Benzina";
+            imp_car= 3.878;//indice di copert benzina
+            dens_car= 720;//densità benzina
+            imp_veic= 142;//impatto costruzione veicolo benzina
+}
+if (p == 2) { 
+            p_1 ="Diesel";
+            imp_car= 3.738;//indice di copert diesel
+            dens_car= 850;//densità diesel
+            imp_veic= 128;//impatto costruzione veicolo diesel
+}
+
+if (q == 1) { q_1 ="Euro1";}
+if (q == 2) { q_1 ="Euro2";}
+if (q == 3) { q_1 ="Euro3";}
+if (q == 4) { q_1 ="Euro4";}
+if (q == 5) { q_1 ="Euro5";}
+
+if (r == 1) { r_1 ="M Leggero";}
+if (r == 2) { r_1 ="N1 <= 1250 kg";}
+if (r == 3) { r_1 ="N1 <= 1700 kg";}
+if (r == 4) { r_1 ="N1 > 1700 kg";}
+
+
+//colanna Benzina M 
+if (p==1 && q==1 && r==1 ) { IMP= 2.72;}
+if (p==1 && q==2 && r==1 ) { IMP= 2.2;}
+if (p==1 && q==3 && r==1 ) { IMP= 2.3;}
+if (p==1 && q==4 && r==1 ) { IMP= 1;}
+if (p==1 && q==5 && r==1 ) { IMP= 1;}
+//colanna diesel M
+if (p==2 && q==1 && r==1 ) { IMP= 2.72;}
+if (p==2 && q==2 && r==1 ) { IMP= 1;}
+if (p==2 && q==3 && r==1 ) { IMP= 0.64;}
+if (p==2 && q==4 && r==1 ) { IMP= 0.5;}
+if (p==2 && q==5 && r==1 ) { IMP= 0.5;}
+//colanna Benzina N<=1250 kg
+if (p==1 && q==1 && r==2 ) { IMP= 2.72;}
+if (p==1 && q==2 && r==2 ) { IMP= 2.2;}
+if (p==1 && q==3 && r==2 ) { IMP= 2.3;}
+if (p==1 && q==4 && r==2 ) { IMP= 1;}
+if (p==1 && q==5 && r==2 ) { IMP= 1;}
+//colanna diesel N<=1250 kg
+if (p==2 && q==1 && r==2 ) { IMP= 2.72;}
+if (p==2 && q==2 && r==2 ) { IMP= 1;}
+if (p==2 && q==3 && r==2 ) { IMP= 0.64;}
+if (p==2 && q==4 && r==2 ) { IMP= 0.5;}
+if (p==2 && q==5 && r==2 ) { IMP= 0.5;}
+//colanna Benzina N<=1700 kg
+if (p==1 && q==1 && r==3 ) { IMP= 5.17;}
+if (p==1 && q==2 && r==3 ) { IMP= 4;}
+if (p==1 && q==3 && r==3 ) { IMP= 4.57;}
+if (p==1 && q==4 && r==3 ) { IMP= 1.82;}
+if (p==1 && q==5 && r==3 ) { IMP= 1.81;}
+//colanna diesel N<=1700 kg
+if (p==2 && q==1 && r==3 ) { IMP= 5.17;}
+if (p==2 && q==2 && r==3 ) { IMP= 1.25;}
+if (p==2 && q==3 && r==3 ) { IMP= 0.8;}
+if (p==2 && q==4 && r==3 ) { IMP= 0.63;}
+if (p==2 && q==5 && r==3 ) { IMP= 0.63;}
+//colanna Benzina N>1700 kg
+if (p==1 && q==1 && r==4 ) { IMP_= 6.9;}
+if (p==1 && q==2 && r==4 ) { IMP= 5;}
+if (p==1 && q==3 && r==4 ) { IMP= 5.52;}
+if (p==1 && q==4 && r==4 ) { IMP= 2.27;}
+if (p==1 && q==5 && r==4 ) { IMP= 2.27;}
+//colanna diesel N>1700 kg
+if (p==2 && q==1 && r==4 ) { IMP= 6.9;}
+if (p==2 && q==2 && r==4 ) { IMP= 1.5;}
+if (p==2 && q==3 && r==4 ) { IMP= 0.8;}
+if (p==2 && q==4 && r==4 ) { IMP= 0.74;}
+if (p==2 && q==5 && r==4 ) { IMP= 0.74;}
+
+var gFEULkm = dens_car * (h / 100);
+var EmCO2Vo = gFEULkm * (IMP + imp_car);
+var IMPvo = (EmCO2Vo + imp_veic) / 1000;//impatto veicolo originario
+
+var imp_kit = imp_veic / 3;//impatto produzione del kit (arbitrario)
+var IMPev = 384 * h_r;//impatto consumo di elettricità da mix energetico (fonte enea)
+var IMPvr = (imp_kit + IMPev - 21) / 1000;//impatto veicolo retrofittato
+
+var aidx = Math.ceil(((IMPvo-IMPvr)/IMPvo)*100);
+
+//indice di retrofit
+
+if (Math.ceil((0.1*eidx+0.9*aidx))>60 && Math.ceil((0.1*eidx+0.9*aidx))<100) {retrofit= "conviene"} else {retrofit= "non conviene"}
+
+var Ridx= 
+"<br />"+"<strong><i>CALCOLO DELL'INDICE DI RETROFIT: </i></strong>"+
+"<br />"+
+"<br />"+"Economico: ["+eidx+" %]"+
+"<br />"+"ambientale: ["+aidx+" %]"+
+"<br />"+"Totale: ["+Math.ceil((0.1*eidx+0.9*aidx))+" %]"+
+"<br />"+
+"<br />"+"<strong><i>Valutazione </i></strong>"+retrofit+" ";
+
+
+var risultato=document.getElementById('calcolo');//pubblica sulla pagina web il risultato della funzione calcolo nello spazio div con lo stesso nome
+risultato.innerHTML=Ridx;
+
+}
+
+
+
+
+function verifica(){
+var controllo=document.getElementById('verifica');
+var r=document.getElementById('$r').value;//tipo di veicolo
+var q=document.getElementById('$q').value;//classe inquinamento
+var p=document.getElementById('$p').value;//motorizzazione
+
+if (p == 1) {p_1 ="Benzina";}
+else if (p == 2) {p_1 ="Diesel";}
+else {p_1 ="campo non corretto riprova";}
+
+if (r == 1) { r_1 ="M Leggero";} 
+else if (r == 2) { r_1 ="N1 <= 1250 kg";}
+else if (r == 3) { r_1 ="N1 <= 1700 kg";}
+else if (r == 4) { r_1 ="N1 > 1700 kg";}
+else {r_1 ="campo non corretto riprova";}
+
+if (q == 1) { q_1 ="Euro1";}
+else if (q == 2) { q_1 ="Euro2";}
+else if (q == 3) { q_1 ="Euro3";}
+else if (q == 4) { q_1 ="Euro4";}
+else if (q == 5) { q_1 ="Euro5";}
+else {q_1 ="campo non corretto riprova";}
+
+
+
+var a=document.getElementById('$a').value;
+var b=document.getElementById('$b').value;
+var c=document.getElementById('$c').value;
+var g=document.getElementById('$g').value;
+var h=document.getElementById('$h').value;
+var i=document.getElementById('$i').value;
+var l=document.getElementById('$l').value;
+var m=document.getElementById('$m').value;
+var a_r = a/2;
+var b_r = 0;
+var g_r=document.getElementById('$g_r').value;
+var h_r=document.getElementById('$h_r').value;
+var i_r=document.getElementById('$i_r').value;
+var l_r=document.getElementById('$l_r').value;
+var m_r=document.getElementById('$m_r').value;
+var n=document.getElementById('$n').value;
+var o=document.getElementById('$o').value;
+
+if (n > 0) { n_1 ="corretto";}
+else {n_1 ="campo non corretto riprova";}
+
+var contr=
+
+"riepilogo dei dati"+
+"<br />"+"<strong><i>VEICOLO ORIGINALE: </i></strong>"+
+"<br />"+
+"<br />"+"<strong>il campo assicurazione è: </strong>"+"["+a+" €]"+
+"<br />"+"<strong>il campo bollo è: </strong>"+"["+b+" €]"+
+"<br />"+"<strong>il campo chilometri è: </strong>"+"["+c+" km]"+
+"<br />"+"<strong>il campo costo carburante è: </strong>"+"["+g+" €/l]"+
+"<br />"+"<strong>il campo consumo è: </strong>"+"["+h+" l/100km]"+
+"<br />"+"<strong>il campo manutezione ordinaria è: </strong>"+"["+i+" €]"+
+"<br />"+"<strong>il campo manutezione straordinaria è: </strong>"+"["+l+" €]"+
+"<br />"+"<strong>il campo prezzo del veicolo è: </strong>"+"["+m+" €]"+
+"<br />"+"<strong>il campo categoria è: </strong>"+"["+r_1+"]"+
+"<br />"+"<strong>il campo classe di inquinamento è: </strong>"+"["+q_1+"]"+
+"<br />"+"<strong>il campo classe motorizzazione è: </strong>"+"["+p_1+"]"+
+"<br />"+
+"<br />"+"<strong><i>VEICOLO RETROFITTATO: </i></strong>"+
+"<br />"+
+"<br />"+"<strong>il campo assicurazione è: </strong>"+"["+a_r+" €]"+
+"<br />"+"<strong>il campo bollo è: </strong>"+"["+b_r+" €]"+
+"<br />"+"<strong>il campo costo dell'energia è: </strong>"+"["+g_r+" €/kWh]"+
+"<br />"+"<strong>il campo consumo è: </strong>"+"["+h_r+" kWh/km]"+
+"<br />"+"<strong>il campo manutezione ordinaria è: </strong>"+"["+i_r+" €]"+
+"<br />"+"<strong>il campo manutezione straordinaria è: </strong>"+"["+l_r+" €]"+
+"<br />"+"<strong>il campo prezzo del veicolo è: </strong>"+"["+m+" €]"+
+"<br />"+
+"<br />"+"<strong>il campo anni di ammortamento è: </strong>"+"["+n+" anni] "+n_1+
+"<br />"+"<strong>il campo interessi è: </strong>"+"["+l_r+" %]"+
+"<br />"+
+"<br />"+"<strong>se i campi sono corretti clicca su calcola</strong>";
+
+
+controllo.innerHTML=contr;
+}
+
+</script>
+
+</head>
+<body>
+<form action="#" method="post"><fieldset><legend>Calcola l'indice di retrofit:</legend>
+<div id="verifica">verifica i dati</div><br /> 
+<div id="calcolo">Calcola l'indice di retrotif</div>
+</fieldset>
+</form>
+
+ <form action="#" method="post"><fieldset><legend>Calcola l'indice di retrofit:</legend>
+
+
+<p>veicolo originale</p>
+<p>Inserisci qui i dati dei veicolo che intendi riqualificare, e poi ripeti i calcoli con i dati del veicolo che vorresti acquistare e confronta i dati</p><br />
+ <label for="$a">assicurazione €/anno</label><input type="number" name="$a" id="$a" /><br /><br />
+ <label for="$b">bollo €/anno</label><input type="number" name="$b" id="$b"  /><br />
+ <label for="$c">chilometri km</label><input type="number" name="$c" id="$c" /><br />
+ <label for="$g">costo carburante €/litro</label><input type="number" name="$g" id="$g" /><br /><br />
+ <label for="$h">consumo carburante l/100k</label><input type="number" name="$h" id="$h" /><br /><br />
+
+ <label for="$i">man ordinaria 100000km</label><input type="number" name="$i" id="$i" /><br /><br />
+ <label for="$l">man straordinaria 100000km</label><input type="number" name="$l" id="$l" /><br /><br />
+ <label for="$m">prezzo del veicolo</label><input type="number" name="$m" id="$m" /><br />
+
+<label for="$p">alimentazione 1 benzina, 2 diesel</label><input type="number" name="$p" id="$p" /><br /><br />
+
+<label for="$q">classe inquinamento Euro da 1 a 5</label><input type="number" name="$q" id="$q" /><br /><br /><br />
+
+ <label for="$r">categoria veicolo 1 per M, 2 per N1 sotto i 1250kg, 3 per N1 sotto i 1700kg, 4 per N1 sopra i 1700kg </label><input type="number" name="$r" id="$r" /><br /><br /><br /><br /><br /><br />
+
+
+<p>veicolo retrofittato</p>
+<p>inserisci qui i dati inerenti al kit di retrofi installatoe i dati della riqualificazione</p><br />
+ <label for="$g_r">costo energia €/kWh</label><input type="number" name="$g_r" id="$g_r" /><br /><br />
+ <label for="$h_r">consumo energia kWh/km</label><input type="number" name="$h_r" id="$h_r" /><br /><br />
+ <label for="$i_r">man ordinaria 100000km</label><input type="number" name="$i_r" id="$i_r" /><br /><br />
+ <label for="$l_r">man straordinaria 100000km</label><input type="number" name="$l_r" id="$l_r" /><br /><br />
+ <label for="$m_r">costo del retrofit</label><input type="number" name="$m_r" id="$m_r" /><br />
+<p>altri dati</p><br />
+ <label for="$n">anni di ammortamento</label><input type="number" name="$n" id="$n" /><br /><br />
+ <label for="$o">interessi</label><input type="number" name="$o" id="$o" /><br />
+
+ <div style="text-align:center;"><input class="button" type="button" value="verifica dati" onclick="verifica()" /><input class="button" type="button" value="calcola" onclick="calcola()" /><input class="button" type="reset" value="reset" /></div></fieldset></form>
+ 
+ <center>
+<p style="color:#ffffff;font: 14px Verdana,sans-serif;">Contribuisce al codice di questa pagina, rilasciata con Licenza <a href="https://creativecommons.org/licenses/by-sa/3.0/it/deed.it! target="_blank">(CC BY-SA 3.0 IT)</a>"</p>
+<a href="https://github.com/MobilityRevolution/Indice-Di-Retrofit.git"><img src="http://www.mobilityrevolution.org/wp-content/uploads/2016/11/github_logo1.png" width="200"></a>
+
+</center>
+
+
+
+<!--
+http://www.w3schools.com/js/tryit.asp?filename=tryjs_console
+http://quellidelcucuzzolo.altervista.org/demo/js-form-preventivo/
+-->
+
+
+</body>
+</html> 
+ 
+
+
